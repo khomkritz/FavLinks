@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -78,9 +79,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'railway',
         'USER': 'postgres',
-        'PASSWORD': 'RNguUfFuvdGRYevHFiJxUXsfDUzMgWLZ',
+        'PASSWORD': 'OODwpcgxtLWfoKVoMmPATkWyeJbPwfXO',
         'HOST': 'roundhouse.proxy.rlwy.net',
-        'PORT': '53749',
+        'PORT': '55073',
     }
 }
 
