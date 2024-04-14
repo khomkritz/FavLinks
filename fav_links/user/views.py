@@ -59,3 +59,17 @@ class Logout(APIView):
             return Response({"status" : False,"message": "Token is invalid"}, status=status.HTTP_401_UNAUTHORIZED)
         Token.objects.filter(user_id=payload["user_id"]).delete()
         return Response({"status" : True, "message" : "logout success"}, status=status.HTTP_200_OK)
+    
+class ResetPassword(APIView):
+    def put(self, request):
+        data = request.data
+        check_user = User.objects.filter(Q(username=data["username"]) | Q(email=data["email"])).first()
+        if check_user is None:
+            return Response({"status" : False,"message": "not found username or email"}, status=status.HTTP_400_BAD_REQUEST)
+        check_pass = strength_password(data["newPassword"])
+        if check_pass["status"] == False:
+            return Response({"status" : False,"message": check_pass["message"]}, status=status.HTTP_400_BAD_REQUEST)
+        hash_pass = hash_password(data["newPassword"])
+        User.objects.filter(id=check_user.id).update(password=hash_pass)
+        return Response({"status" : True, "message" : "resetpassword success"}, status=status.HTTP_200_OK)
+        
