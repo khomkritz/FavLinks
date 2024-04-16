@@ -17,11 +17,7 @@ class CreateCategory(APIView):
             if "name" not in data or data["name"] == None:
                 return Response({"status" : False,"message": "require name"}, status=status.HTTP_400_BAD_REQUEST)
             user_id = payload["user_id"]
-            data_create = {
-                "name" : data["name"],
-                "user_id" : user_id,
-            }
-            create_category = Category.objects.create(**data_create)
+            create_category = Category.objects.create({"name" : data["name"], "user_id" : user_id,})
             if create_category:
                 return Response({"status" : True, "message" : "create category success"}, status=status.HTTP_200_OK)
             else:
@@ -42,14 +38,10 @@ class GetCategoryList(APIView):
             if payload["status"] == False:
                 return Response({"status" : False,"message": "Token is invalid"}, status=status.HTTP_401_UNAUTHORIZED)
             user_id = payload["user_id"]
-            categories = Category.objects.filter(user_id=user_id)
+            categories = Category.objects.filter(user_id=user_id).order_by("id")
             for category in categories:
                 if category.delete_at == None:
-                    data_category = {
-                        "id" : category.id,
-                        "name" : category.name
-                    }
-                    collect_categories.append(data_category)
+                    collect_categories.append({"id" : category.id, "name" : category.name})
             return Response({"status" : True, "message" : "get category list success", "data" : collect_categories}, status=status.HTTP_200_OK)
         except Exception as error:
             data_error = {
@@ -149,17 +141,12 @@ class CreateTag(APIView):
         try:
             data = request.data
             payload = verify_jwt_token(request)
-            print(payload)
             if payload["status"] == False:
                 return Response({"status" : False,"message": "Token is invalid"}, status=status.HTTP_401_UNAUTHORIZED)
             if "name" not in data or data["name"] == None:
                 return Response({"status" : False,"message": "require name"}, status=status.HTTP_400_BAD_REQUEST)
             user_id = payload["user_id"]
-            data_create = {
-                "name" : data["name"],
-                "user_id" : user_id,
-            }
-            create_tag = Tag.objects.create(**data_create)
+            create_tag = Tag.objects.create({"name" : data["name"],"user_id" : user_id,})
             if create_tag:
                 return Response({"status" : True, "message" : "create tag success"}, status=status.HTTP_200_OK)
             else:
@@ -182,11 +169,7 @@ class GetTagList(APIView):
             user_id = payload["user_id"]
             tags = Tag.objects.filter(user_id=user_id, delete_at=None).order_by('id')
             for tag in tags:
-                data_tag = {
-                    "id" : tag.id,
-                    "name" : tag.name
-                }
-                collect_tags.append(data_tag)
+                collect_tags.append({"id" : tag.id,"name" : tag.name})
             return Response({"status" : True, "message" : "get tag list success", "data" : collect_tags}, status=status.HTTP_200_OK)
         except Exception as error:
             data_error = {
@@ -314,16 +297,19 @@ class CreateUrl(APIView):
 class GetUrlList(APIView):
     def get(self, request):
         try:
-            collect_urls = []
             name = request.GET.get("name")
             category = request.GET.get("category")
             date_start = request.GET.get("date_start")
             date_end = request.GET.get("date_end")
             stat = request.GET.get("status") #1 in process , 2 approve , 3 reject , 4 delete
+
+            collect_urls = []
             payload = verify_jwt_token(request)
             if payload["status"] == False:
                 return Response({"status" : False,"message": "Token is invalid"}, status=status.HTTP_401_UNAUTHORIZED)
             user_id = payload["user_id"]
+
+
             urls = Url.objects.filter(user_id=user_id).order_by("id")
             if name != None:
                 urls = urls.filter(name__icontains=name)
@@ -332,9 +318,8 @@ class GetUrlList(APIView):
             if date_start != None and date_end != None:
                 urls = urls.filter(create_at__range=(datetime.strptime(date_start, '%Y-%m-%d'), (datetime.strptime(date_end, '%Y-%m-%d') + timedelta(minutes=1439))))
             if stat != None:
-                print(stat)
                 urls = urls.filter(status=stat)
-                print(urls)
+
             for url in urls:
                 urltags = UrlTag.objects.filter(url=url.id)
                 collect_tags = []
@@ -346,10 +331,7 @@ class GetUrlList(APIView):
                     "description" : url.description,
                     "link" : url.link,
                     "status" : url.status,
-                    "category" : {
-                        "id" : url.category.id,
-                        "name" : url.category.name
-                    },
+                    "category" : {"id" : url.category.id, "name" : url.category.name},
                     "tag" : collect_tags
                 }
                 collect_urls.append(data_url)
@@ -375,20 +357,13 @@ class GetUrlID(APIView):
                 return Response({"status" : False,"message": "tag id isn't true"}, status=status.HTTP_400_BAD_REQUEST)
             collect_tags = []
             for urltag in urltags:
-                data_urltag = {
-                    "id" : urltag.tag.id,
-                    "name" : urltag.tag.name
-                }
-                collect_tags.append(data_urltag)
+                collect_tags.append({"id" : urltag.tag.id, "name" : urltag.tag.name})
             data_url = {
                 "id" : url.id,
                 "name" : url.name,
                 "description" : url.description,
                 "link" : url.link,
-                "category" : {
-                    "id" : url.category.id,
-                    "name" : url.category.name
-                },
+                "category" : {"id" : url.category.id, "name" : url.category.name},
                 "tag" : collect_tags,
                 "create_at" : url.create_at,
                 "update_at" : url.update_at,
@@ -431,20 +406,13 @@ class UpdateUrl(APIView):
             urltags = UrlTag.objects.filter(url=url.id)
             collect_tags = []
             for urltag in urltags:
-                data_urltag = {
-                    "id" : urltag.tag.id,
-                    "name" : urltag.tag.name
-                }
-                collect_tags.append(data_urltag)
+                collect_tags.append({"id" : urltag.tag.id, "name" : urltag.tag.name})
             data_url = {
                 "id" : url.id,
                 "name" : url.name,
                 "description" : url.description,
                 "link" : url.link,
-                "category" : {
-                    "id" : url.category.id,
-                    "name" : url.category.name
-                },
+                "category" : {"id" : url.category.id, "name" : url.category.name},
                 "tag" : collect_tags,
                 "create_at" : url.create_at,
                 "update_at" : url.update_at,
