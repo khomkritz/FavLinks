@@ -13,4 +13,10 @@ urlpatterns = [
     path('tag/get/<int:tag_id>', views.GetTagID.as_view()),
     path('tag/update/<int:tag_id>', views.UpdateTag.as_view()),
     path('tag/delete/<int:tag_id>', views.DeleteTag.as_view()),
+
+    path('url/create', views.CreateUrl.as_view()),
+    path('url/get', views.GetUrlList.as_view()),
+    path('url/get/<int:url_id>', views.GetUrlID.as_view()),
+    path('url/update/<int:url_id>', views.UpdateUrl.as_view()),
+    path('url/delete/<int:url_id>', views.DeleteUrl.as_view()),
 ]

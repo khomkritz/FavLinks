@@ -27,7 +27,16 @@ class Url(models.Model):
     link = models.CharField(max_length=150)
     user_id = models.IntegerField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    tag_id = models.ManyToManyField(Tag)
+    # tag_id = models.ManyToManyField(Tag)
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+    delete_at = models.DateTimeField(null=True, blank=True)
+
+class UrlTag(models.Model):
+    class Meta:
+        db_table = 'url_tag'
+    url = models.ForeignKey(Url, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
     delete_at = models.DateTimeField(null=True, blank=True)
