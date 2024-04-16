@@ -354,7 +354,7 @@ class GetUrlID(APIView):
             url = Url.objects.get(id=url_id)
             urltags = UrlTag.objects.filter(url=url.id)
             if url.user_id != user_id:
-                return Response({"status" : False,"message": "tag id isn't true"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"status" : False,"message": "url id isn't true"}, status=status.HTTP_400_BAD_REQUEST)
             collect_tags = []
             for urltag in urltags:
                 collect_tags.append({"id" : urltag.tag.id, "name" : urltag.tag.name})
@@ -458,6 +458,8 @@ class ApproveRejectUrl(APIView):
     def put(self, request, url_id):
         try:
             stat = request.data["status"]
+            if stat not in [2,3]:
+                return Response({"status" : False,"message": "status isn't true"}, status=status.HTTP_400_BAD_REQUEST)
             Url.objects.filter(id=url_id).update(status=stat)
             return Response({"status" : True, "message" : "update status url success"}, status=status.HTTP_200_OK)
         except Exception as error:
