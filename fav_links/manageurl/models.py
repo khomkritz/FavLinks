@@ -27,7 +27,7 @@ class Url(models.Model):
     link = models.CharField(max_length=150)
     user_id = models.IntegerField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    # tag_id = models.ManyToManyField(Tag)
+    status = models.IntegerField(default=1) #1 in process , 2 approve , 3 reject , 4 delete
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
     delete_at = models.DateTimeField(null=True, blank=True)
@@ -40,3 +40,11 @@ class UrlTag(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
     delete_at = models.DateTimeField(null=True, blank=True)
+
+class LogError(models.Model):
+    class Meta:
+        db_table = 'log_error'
+    method = models.CharField(max_length=15)
+    path = models.CharField(max_length=150)
+    data = models.CharField(max_length=225)
+    create_at = models.DateTimeField(auto_now_add=True)

@@ -19,4 +19,5 @@ urlpatterns = [
     path('url/get/<int:url_id>', views.GetUrlID.as_view()),
     path('url/update/<int:url_id>', views.UpdateUrl.as_view()),
     path('url/delete/<int:url_id>', views.DeleteUrl.as_view()),
+    path('url/approve_reject/<int:url_id>', views.ApproveRejectUrl.as_view())
 ]
