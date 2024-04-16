@@ -7,7 +7,7 @@ In my project using Python vesion 3.9.7 [python]([https://pip.pypa.io/en/stable/
 
 Clone project to folder
 ```bash
-git clone 
+git clone https://github.com/khomkritz/FavLinks.git
 ```
 create env
 ```bash
